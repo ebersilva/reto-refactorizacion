@@ -1,0 +1,87 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- /home/ev/git/reto-refactorizacion/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/ev/git/reto-refactorizacion
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 63 items
+
+tests/test_almacen.py::test_guardar_y_cargar_conserva_los_datos PASSED   [  1%]
+tests/test_almacen.py::test_el_folio_continua_despues_de_recargar PASSED [  3%]
+tests/test_almacen.py::test_cargar_archivo_inexistente_regresa_false PASSED [  4%]
+tests/test_casos_borde.py::test_limites_de_descuento_por_volumen[99.99-5-579.94] PASSED [  6%]
+tests/test_casos_borde.py::test_limites_de_descuento_por_volumen[100.0-5-551.0] PASSED [  7%]
+tests/test_casos_borde.py::test_limites_de_descuento_por_volumen[99.99-10-1101.89] PASSED [  9%]
+tests/test_casos_borde.py::test_limites_de_descuento_por_volumen[100.0-10-1044.0] PASSED [ 11%]
+tests/test_casos_borde.py::test_vip_sin_monto_minimo_no_recibe_extra PASSED [ 12%]
+tests/test_casos_borde.py::test_vip_aplica_extra_sin_descuento_por_volumen PASSED [ 14%]
+tests/test_casos_borde.py::test_clientes_no_vip[] PASSED                 [ 15%]
+tests/test_casos_borde.py::test_clientes_no_vip[None] PASSED             [ 17%]
+tests/test_casos_borde.py::test_clientes_no_vip[VI] PASSED               [ 19%]
+tests/test_casos_borde.py::test_clientes_no_vip[vip001] PASSED           [ 20%]
+tests/test_casos_borde.py::test_clientes_no_vip[XVIP] PASSED             [ 22%]
+tests/test_casos_borde.py::test_cotizar_no_aplica_descuento_vip PASSED   [ 23%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[-1-codigo vacio] PASSED [ 25%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[None-1-codigo vacio] PASSED [ 26%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[ZZZ-1-producto no existe] PASSED [ 28%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-0-cantidad invalida] PASSED [ 30%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-None-cantidad invalida] PASSED [ 31%]
+tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-51-stock insuficiente] PASSED [ 33%]
+tests/test_casos_borde.py::test_cotizar_mensajes_de_error[-1-producto no existe] PASSED [ 34%]
+tests/test_casos_borde.py::test_cotizar_mensajes_de_error[ZZZ-1-producto no existe] PASSED [ 36%]
+tests/test_casos_borde.py::test_cotizar_mensajes_de_error[A1-0-cantidad invalida] PASSED [ 38%]
+tests/test_casos_borde.py::test_cotizar_mensajes_de_error[A1-None-cantidad invalida] PASSED [ 39%]
+tests/test_casos_borde.py::test_cotizar_no_valida_stock_ni_lo_modifica PASSED [ 41%]
+tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[-10.0-1-codigo vacio] PASSED [ 42%]
+tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[None-10.0-1-codigo vacio] PASSED [ 44%]
+tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[A1-10.0-1-el producto ya existe] PASSED [ 46%]
+tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[B1-0-1-precio invalido] PASSED [ 47%]
+tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[B1-10.0--1-stock invalido] PASSED [ 49%]
+tests/test_casos_borde.py::test_eliminar_y_actualizar_inexistente PASSED [ 50%]
+tests/test_casos_borde.py::test_buscar_texto_vacio_regresa_todo PASSED   [ 52%]
+tests/test_casos_borde.py::test_ticket_con_descuento_texto_exacto PASSED [ 53%]
+tests/test_casos_borde.py::test_ticket_sin_descuento_omite_la_linea PASSED [ 55%]
+tests/test_casos_borde.py::test_venta_registra_todos_los_campos PASSED   [ 57%]
+tests/test_casos_borde.py::test_reporte_inventario_texto_exacto PASSED   [ 58%]
+tests/test_casos_borde.py::test_resumen_ventas_texto_exacto PASSED       [ 60%]
+tests/test_casos_borde.py::test_stock_bajo_limite_es_cinco PASSED        [ 61%]
+tests/test_casos_borde.py::test_mas_vendidos_empates_conservan_orden_de_aparicion PASSED [ 63%]
+tests/test_casos_borde.py::test_mas_vendidos_sin_ventas PASSED           [ 65%]
+tests/test_casos_borde.py::test_guardar_escribe_la_estructura_esperada PASSED [ 66%]
+tests/test_casos_borde.py::test_cargar_archivo_corrupto PASSED           [ 68%]
+tests/test_casos_borde.py::test_cargar_archivo_inexistente_deja_mensaje PASSED [ 69%]
+tests/test_casos_borde.py::test_cargar_sin_contador_inicia_en_cero PASSED [ 71%]
+tests/test_casos_borde.py::test_cargar_conserva_identidad_de_las_colecciones PASSED [ 73%]
+tests/test_gestor.py::test_agregar_producto_queda_en_inventario PASSED   [ 74%]
+tests/test_gestor.py::test_rechaza_altas_invalidas PASSED                [ 76%]
+tests/test_gestor.py::test_actualizar_stock_suma_y_resta PASSED          [ 77%]
+tests/test_gestor.py::test_eliminar_producto PASSED                      [ 79%]
+tests/test_gestor.py::test_buscar_producto_por_nombre PASSED             [ 80%]
+tests/test_gestor.py::test_venta_descuenta_stock_y_asigna_folio PASSED   [ 82%]
+tests/test_gestor.py::test_venta_sin_descuento_aplica_iva PASSED         [ 84%]
+tests/test_gestor.py::test_venta_con_descuento_por_volumen_medio PASSED  [ 85%]
+tests/test_gestor.py::test_venta_con_descuento_por_volumen_alto PASSED   [ 87%]
+tests/test_gestor.py::test_venta_cliente_vip_recibe_descuento_extra PASSED [ 88%]
+tests/test_gestor.py::test_venta_rechaza_stock_insuficiente PASSED       [ 90%]
+tests/test_gestor.py::test_venta_rechaza_producto_inexistente_y_cantidad_invalida PASSED [ 92%]
+tests/test_gestor.py::test_cotizar_coincide_con_el_total_de_la_venta PASSED [ 93%]
+tests/test_reportes.py::test_stock_bajo_detecta_los_correctos PASSED     [ 95%]
+tests/test_reportes.py::test_total_vendido_suma_las_ventas PASSED        [ 96%]
+tests/test_reportes.py::test_mas_vendidos_ordena_por_unidades PASSED     [ 98%]
+tests/test_reportes.py::test_reporte_inventario_marca_stock_bajo PASSED  [100%]
+
+============================== 63 passed in 0.04s ==============================
+
+4	UP009 	[*] utf8-encoding-declaration
+3	SIM102	[ ] collapsible-if
+3	SIM115	[ ] open-file-with-context-handler
+2	C901  	[ ] complex-structure
+2	N802  	[ ] invalid-function-name
+1	SIM108	[ ] if-else-block-instead-of-if-exp
+1	N816  	[ ] mixed-case-variable-in-global-scope
+1	SIM103	[ ] needless-bool
+1	UP015 	[*] redundant-open-modes
+1	I001  	[*] unsorted-imports
+1	F401  	[*] unused-import
+Found 20 errors.
+[*] 7 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).

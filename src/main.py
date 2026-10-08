@@ -93,16 +93,20 @@ OPCION_SALIR = "8"
 def menu():
     print("Bienvenido al gestor de la tienda La Esquina")
     if almacen.hayArchivo(ARCHIVO):
-        almacen.cargar_datos(ARCHIVO)
-        print("Datos cargados de", ARCHIVO)
+        if almacen.cargar_datos(ARCHIVO):
+            print("Datos cargados de", ARCHIVO)
+        else:
+            mostrar_error()
     while True:
         print("")
         print("\n".join(OPCIONES_MENU))
         opcion = input("Opcion: ")
         if opcion == OPCION_SALIR:
-            almacen.guardar_datos(ARCHIVO)
-            print("Datos guardados. Hasta luego.")
-            break
+            if almacen.guardar_datos(ARCHIVO):
+                print("Datos guardados. Hasta luego.")
+                break
+            mostrar_error()
+            continue
         accion = ACCIONES.get(opcion)
         if accion is None:
             print("Opcion no valida.")

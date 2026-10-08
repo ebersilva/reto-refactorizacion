@@ -289,3 +289,35 @@ def test_codigo_numerico_cero_no_se_trata_como_vacio():
     assert gestor.registrar_venta(0, 1)["folio"] == 1
     assert gestor.registrar_venta(1, 1) is None
     assert gestor.ultimo_error == "producto no existe"
+
+
+# ------------------------------------- manejo de errores (R7, cambio deliberado)
+# Antes de R7 estos casos lanzaban excepciones sin capturar; dos de ellos
+# además borraban el inventario antes de fallar.
+
+
+@pytest.mark.parametrize(
+    "contenido",
+    ['{"inventario": {}}', '{"ventas": []}', "[]", '{"inventario": [], "ventas": []}'],
+)
+def test_cargar_estructura_invalida_no_toca_el_estado(tmp_path, contenido):
+    ruta = tmp_path / "datos.json"
+    ruta.write_text(contenido, encoding="utf-8")
+    _alta()
+    gestor.registrar_venta("A1", 1)
+    assert almacen.cargar_datos(str(ruta)) is False
+    assert gestor.ultimo_error == "archivo corrupto"
+    assert "A1" in gestor.INVENTARIO
+    assert len(gestor.VENTAS) == 1
+
+
+def test_cargar_ruta_ilegible(tmp_path):
+    # un directorio "existe" pero no se puede leer como archivo
+    assert almacen.cargar_datos(str(tmp_path)) is False
+    assert gestor.ultimo_error.startswith("no se pudo leer el archivo")
+
+
+def test_guardar_en_ruta_invalida_regresa_false(tmp_path):
+    ruta = tmp_path / "no_existe" / "datos.json"
+    assert almacen.guardar_datos(str(ruta)) is False
+    assert gestor.ultimo_error.startswith("no se pudo guardar el archivo")

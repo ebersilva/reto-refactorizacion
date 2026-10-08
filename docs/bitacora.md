@@ -376,3 +376,19 @@ que la IA decida qué significa "equivalente".
   entrada; se comparan la salida estándar y el JSON guardado, ignorando la fecha.
 - Prueba diferencial aleatoria de `mas_vendidos`/`total_vendido` contra el
   módulo original (R9).
+
+## Reflexión final (resumen; versión completa en [`reflexion.md`](reflexion.md))
+
+Claude Code fue muy útil para detectar y corregir los problemas: en minutos
+entregó el diagnóstico de *code smells*, un plan priorizado y cada cambio
+validado con pruebas, linter y, al final, `mypy --strict`. Lo más valioso que
+señaló y yo no había notado fue que la suite original no protegía el texto de
+los tickets, los mensajes de error ni los empates; por eso se escribieron
+primero 43 pruebas de caracterización, que después atraparon un error que la
+suite original dejaba pasar. Hubo que corregir tres propuestas que parecían
+equivalentes y no lo eran: `if not codigo` (R4), `Counter.most_common` (R9) y
+un reemplazo masivo de `global` (R11). Aprendí que un buen prompt lleva el
+objetivo, la restricción de comportamiento y el criterio de verificación; que
+`CLAUDE.md` funciona como contrato, y que el hecho de que los tests pasen no
+prueba que el cambio sea correcto: la revisión sigue siendo responsabilidad
+de quien entrega.

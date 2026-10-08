@@ -281,3 +281,11 @@ def test_cargar_conserva_identidad_de_las_colecciones(tmp_path):
     almacen.cargar_datos(ruta)
     assert gestor.INVENTARIO is inventario
     assert gestor.VENTAS is ventas
+
+
+def test_codigo_numerico_cero_no_se_trata_como_vacio():
+    # Agregado tras detectar en revisión que `if not codigo` cambiaba esto.
+    assert gestor.agregarProducto(0, "Cero", 10.0, 5) is True
+    assert gestor.registrar_venta(0, 1)["folio"] == 1
+    assert gestor.registrar_venta(1, 1) is None
+    assert gestor.ultimo_error == "producto no existe"

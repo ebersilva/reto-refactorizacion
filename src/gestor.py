@@ -42,7 +42,7 @@ def reiniciar_sistema():
 def agregarProducto(codigo, nombre, precio, stock):
     # valida los datos y da de alta un producto en el inventario
     global ultimo_error
-    if codigo is None or codigo == "":
+    if codigo in (None, ""):
         ultimo_error = "codigo vacio"
         return False
     if codigo in INVENTARIO:
@@ -116,13 +116,9 @@ def calcular_descuento_por_volumen(subtotal):
 
 def calcular_descuento_vip(subtotal, descuento_volumen, cliente):
     """Descuento extra para clientes VIP con compras arriba del monto minimo."""
-    # los clientes cuyo codigo empieza con VIP tienen un extra,
-    # pero solo si su compra (ya con descuento) pasa de cierto monto
-    if cliente != "" and cliente is not None:
-        if len(cliente) >= len(PREFIJO_CLIENTE_VIP):
-            if cliente[0:len(PREFIJO_CLIENTE_VIP)] == PREFIJO_CLIENTE_VIP:
-                if subtotal - descuento_volumen > MONTO_MINIMO_VIP:
-                    return subtotal * TASA_DESCUENTO_VIP
+    es_vip = bool(cliente) and cliente.startswith(PREFIJO_CLIENTE_VIP)
+    if es_vip and subtotal - descuento_volumen > MONTO_MINIMO_VIP:
+        return subtotal * TASA_DESCUENTO_VIP
     return 0
 
 
@@ -148,23 +144,18 @@ def registrar_venta(codigo, cantidad, cliente=""):
     regresa None y deja el motivo en ultimo_error.
     """
     global contadorVentas, ultimo_error
-    temp2 = None
-    if codigo is not None and codigo != "":
-        if codigo in INVENTARIO:
-            if cantidad is not None and cantidad > 0:
-                if INVENTARIO[codigo]["stock"] >= cantidad:
-                    temp2 = INVENTARIO[codigo]
-                else:
-                    ultimo_error = "stock insuficiente"
-                    return None
-            else:
-                ultimo_error = "cantidad invalida"
-                return None
-        else:
-            ultimo_error = "producto no existe"
-            return None
-    else:
+    if codigo in (None, ""):
         ultimo_error = "codigo vacio"
+        return None
+    if codigo not in INVENTARIO:
+        ultimo_error = "producto no existe"
+        return None
+    if cantidad is None or cantidad <= 0:
+        ultimo_error = "cantidad invalida"
+        return None
+    temp2 = INVENTARIO[codigo]
+    if temp2["stock"] < cantidad:
+        ultimo_error = "stock insuficiente"
         return None
     importes = calcular_importes(temp2["precio"] * cantidad, cliente)
     # descontar del inventario

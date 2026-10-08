@@ -1,0 +1,11 @@
+$ pytest
+......................................................................   [100%]
+70 passed in 0.05s
+
+$ ruff check src --statistics
+All checks passed!
+
+$ comparar menú original vs refactorizado
+MENU IDENTICO (155 lineas de salida, JSON guardado igual)
+$ fuzz mas_vendidos/total_vendido vs original (seed=1, 2000 escenarios x 7 valores de n)
+mas_vendidos/total_vendido iguales al original en 14000 casos aleatorios

@@ -1,0 +1,32 @@
+# Entornos virtuales y dependencias instaladas
+.venv/
+venv/
+env/
+
+# Cachés y artefactos generados por Python y herramientas
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Basura del sistema operativo / empaquetado
+.DS_Store
+__MACOSX/
+._*
+
+# Control de versiones
+.git/
+
+# Logs de evidencia generados por las corridas (no son código fuente)
+docs/evidencia/
+
+# Datos que genera la app al usarla (el de ejemplo sí se versiona)
+*.json
+!datos_ejemplo.json

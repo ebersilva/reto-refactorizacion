@@ -2,17 +2,26 @@
 
 ## Gestor de inventario y ventas — Tienda "La Esquina"
 
-Este repositorio contiene una aplicación de consola en Python para administrar
-el inventario y las ventas de una tienda pequeña: alta de productos, registro
-de ventas con descuentos e IVA, cotizaciones, alertas de stock bajo, reporte de
-más vendidos y persistencia de datos en JSON.
+Aplicación de consola en Python para administrar el inventario y las ventas de
+una tienda pequeña: alta de productos, registro de ventas con descuentos e IVA,
+cotizaciones, alertas de stock bajo, reporte de más vendidos y persistencia de
+datos en JSON.
 
-**El programa funciona correctamente** (todas las pruebas pasan), pero el código
-fue escrito "al aventón" y arrastra una cantidad importante de malas prácticas:
-funciones gigantes que hacen de todo, lógica duplicada, nombres crípticos,
-números mágicos, estado global, código muerto, anidamiento excesivo, estilos de
-nombrado mezclados... Tu misión es **mejorarlo sin romperlo**, usando Claude
-Code como asistente.
+Esta rama contiene el código **refactorizado con Claude Code**. El original
+funcionaba pero arrastraba funciones gigantes, lógica duplicada, nombres
+crípticos, números mágicos, estado global, código muerto e `if` anidados. Se
+mejoró **sin cambiar el comportamiento observable**:
+
+| | Original | Refactorizado |
+|---|---|---|
+| `ruff check src` | 20 errores | 0 |
+| Pruebas | 20 | 70 (las 20 originales intactas) |
+| `mypy --strict` | — | sin errores |
+| Complejidad máxima | 17 | 7 |
+
+Cómo se hizo, paso por paso: [`docs/bitacora.md`](docs/bitacora.md) ·
+Aprendizajes: [`docs/reflexion.md`](docs/reflexion.md) ·
+Instrucciones para Claude Code: [`CLAUDE.md`](CLAUDE.md)
 
 ### Estructura del proyecto
 
@@ -23,18 +32,32 @@ Code como asistente.
 │   ├── almacen.py       # Carga y guardado de datos (JSON)
 │   ├── reportes.py      # Reportes e indicadores
 │   └── main.py          # Menú interactivo de consola
-├── tests/               # Suite de pruebas (pytest) — NO la modifiques
+├── tests/               # Suite original (sin modificar) + test_casos_borde.py
+├── docs/
+│   ├── bitacora.md      # Registro de cada refactorización (prompts, cambios, tests)
+│   ├── reflexion.md     # Aprendizajes y conclusiones
+│   └── evidencia/       # Salida de pytest/ruff/mypy en cada paso
+├── scripts/             # comparar_menu.sh: menú original vs refactorizado
+├── CLAUDE.md            # Instrucciones del proyecto para Claude Code
+├── .claudeignore        # Archivos que Claude Code no debe leer
 ├── datos_ejemplo.json   # Datos de ejemplo para el menú interactivo
 ├── requirements.txt
-├── pyproject.toml       # Configuración del linter (ruff) — NO la modifiques
-└── BITACORA_TEMPLATE.md # Plantilla para tu bitácora de prompts
+├── pyproject.toml       # Configuración del linter (ruff) — sin modificar
+└── BITACORA_TEMPLATE.md # Plantilla original de la bitácora
 ```
 
 ## Instalación y ejecución
 
-Requiere Python 3.10 o superior.
+Requisitos: Python 3.10 o superior (probado con 3.14), `pip` y `git`.
+Dependencias: `pytest>=8.0` y `ruff>=0.6` (ver `requirements.txt`); el código de
+`src/` solo usa la biblioteca estándar.
 
 ```bash
+# 0. Clonar y entrar a la rama del reto
+git clone <url-de-tu-fork> reto-refactorizacion
+cd reto-refactorizacion
+git switch refactorizacion
+
 # 1. Crear y activar un entorno virtual
 python -m venv .venv
 source .venv/bin/activate        # En Windows: .venv\Scripts\activate
@@ -45,8 +68,15 @@ pip install -r requirements.txt
 # 3. Ejecutar la suite de pruebas (deben pasar TODAS)
 pytest
 
-# 4. Ejecutar el linter (al inicio reporta ~20 problemas; al final: 0)
+# 4. Ejecutar el linter (original: 20 problemas; refactorizado: 0)
 ruff check src
+
+# 4b. (Opcional) Verificar tipos
+pip install mypy
+cd src && mypy --strict --python-version 3.10 . && cd ..
+
+# 4c. (Opcional) Comparar el menú contra el código original de main
+scripts/comparar_menu.sh
 
 # 5. (Opcional) Probar la aplicación interactiva
 cd src && python main.py

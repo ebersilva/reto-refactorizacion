@@ -1,92 +1,84 @@
-# -*- coding: utf-8 -*-
 """Reportes de la tienda: inventario, ventas y mas vendidos."""
 
-import os
+from collections import Counter
 
 import gestor
+from gestor import Producto
+
+STOCK_MINIMO = 5  # por debajo de esta cantidad se considera stock bajo
 
 
-def hacer_cosa(v):
-    # le da formato de dinero al numero
-    return "$" + str(round(v, 2))
+def formatear_dinero(monto: float) -> str:
+    """Formatea un monto como dinero: $ seguido del valor redondeado a 2."""
+    return "$" + str(round(monto, 2))
 
 
-def productos_stock_bajo():
+def tiene_stock_bajo(producto: Producto) -> bool:
+    return producto["stock"] < STOCK_MINIMO
+
+
+def productos_stock_bajo() -> list[Producto]:
     """Regresa la lista de productos con stock por debajo del minimo."""
-    temp2 = []
-    for k in gestor.INVENTARIO:
-        if gestor.INVENTARIO[k]["stock"] < 5:
-            temp2.append(gestor.INVENTARIO[k])
-    return temp2
+    return [p for p in gestor.INVENTARIO.values() if tiene_stock_bajo(p)]
 
 
-def reporte_inventario():
+def _linea_inventario(producto: Producto) -> str:
+    linea = (
+        f"{producto['codigo']} | {producto['nombre']} | "
+        f"{formatear_dinero(producto['precio'])} | stock: {producto['stock']}"
+    )
+    if tiene_stock_bajo(producto):
+        linea += "  <-- STOCK BAJO"
+    return linea
+
+
+def reporte_inventario() -> str:
     """Arma el reporte del inventario, lo imprime y lo regresa como texto."""
-    s = "===== INVENTARIO =====\n"
-    aux = 0
-    for k in gestor.INVENTARIO:
-        p = gestor.INVENTARIO[k]
-        linea = p["codigo"] + " | " + p["nombre"] + " | "
-        linea = linea + hacer_cosa(p["precio"]) + " | stock: " + str(p["stock"])
-        if p["stock"] < 5:
-            linea = linea + "  <-- STOCK BAJO"
-        s = s + linea + "\n"
-        aux = aux + p["precio"] * p["stock"]
-    s = s + "Valor total del inventario: " + hacer_cosa(aux) + "\n"
-    print(s)
-    return s
+    productos = gestor.INVENTARIO.values()
+    valor_total = sum(p["precio"] * p["stock"] for p in productos)
+    lineas = [
+        "===== INVENTARIO =====",
+        *(_linea_inventario(p) for p in productos),
+        f"Valor total del inventario: {formatear_dinero(valor_total)}",
+    ]
+    reporte = "\n".join(lineas) + "\n"
+    print(reporte)
+    return reporte
 
 
-def total_vendido():
+def _suma_de_totales() -> float:
+    return sum(venta["total"] for venta in gestor.VENTAS)
+
+
+def total_vendido() -> float:
     """Suma el total (con IVA) de todas las ventas registradas."""
-    t = 0
-    for v in gestor.VENTAS:
-        t = t + v["total"]
-    return round(t, 2)
+    return round(_suma_de_totales(), 2)
 
 
-def mas_vendidos(n=3):
-    """Regresa los n productos mas vendidos como lista de (codigo, unidades)."""
-    aux = {}
-    for v in gestor.VENTAS:
-        if v["codigo"] in aux:
-            aux[v["codigo"]] = aux[v["codigo"]] + v["cantidad"]
-        else:
-            aux[v["codigo"]] = v["cantidad"]
-    temp = []
-    for k in aux:
-        temp.append((k, aux[k]))
-    # ordenamiento de burbuja (TODO: algun dia usar sorted)
-    for i in range(len(temp)):
-        for j in range(0, len(temp) - i - 1):
-            if temp[j][1] < temp[j + 1][1]:
-                t = temp[j]
-                temp[j] = temp[j + 1]
-                temp[j + 1] = t
-    return temp[0:n]
+def mas_vendidos(n: int | None = 3) -> list[tuple[str, int]]:
+    """Regresa los n productos mas vendidos como lista de (codigo, unidades).
+
+    En empate se conserva el orden en que el producto se vendio por primera vez.
+    """
+    unidades_por_codigo: Counter[str] = Counter()
+    for venta in gestor.VENTAS:
+        unidades_por_codigo[venta["codigo"]] += venta["cantidad"]
+    # sorted es estable: los empates mantienen el orden de aparicion.
+    # No se usa Counter.most_common(n) porque con n negativo no equivale a [:n].
+    ranking = sorted(unidades_por_codigo.items(), key=lambda par: par[1], reverse=True)
+    return ranking[:n]
 
 
-def resumen_ventas():
+def resumen_ventas() -> str:
     """Arma el resumen de ventas del dia, lo imprime y lo regresa."""
-    s = "===== RESUMEN DE VENTAS =====\n"
-    t = 0
-    for v in gestor.VENTAS:
-        s = s + "Folio " + str(v["folio"]) + ": " + v["nombre"]
-        s = s + " x" + str(v["cantidad"]) + " = " + hacer_cosa(v["total"]) + "\n"
-        t = t + v["total"]
-    s = s + "Numero de ventas: " + str(len(gestor.VENTAS)) + "\n"
-    s = s + "Total del dia: " + hacer_cosa(t) + "\n"
-    print(s)
-    return s
-
-
-def reporteViejoCSV(ruta):
-    # version vieja del reporte que pedia contabilidad, ya no se usa
-    # desde que cambiaron de sistema, pero por si las dudas aqui sigue
-    f = open(ruta, "w", encoding="utf-8")
-    f.write("codigo,nombre,stock\n")
-    for k in gestor.INVENTARIO:
-        p = gestor.INVENTARIO[k]
-        f.write(p["codigo"] + "," + p["nombre"] + "," + str(p["stock"]) + "\n")
-    f.close()
-    return ruta
+    lineas = ["===== RESUMEN DE VENTAS ====="]
+    lineas += [
+        f"Folio {venta['folio']}: {venta['nombre']} x{venta['cantidad']}"
+        f" = {formatear_dinero(venta['total'])}"
+        for venta in gestor.VENTAS
+    ]
+    lineas.append(f"Numero de ventas: {len(gestor.VENTAS)}")
+    lineas.append(f"Total del dia: {formatear_dinero(_suma_de_totales())}")
+    resumen = "\n".join(lineas) + "\n"
+    print(resumen)
+    return resumen

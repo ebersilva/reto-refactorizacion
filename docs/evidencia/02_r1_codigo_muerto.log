@@ -1,0 +1,16 @@
+$ pytest
+...............................................................          [100%]
+63 passed in 0.04s
+
+$ ruff check src --statistics
+3	SIM102	[ ] collapsible-if
+2	C901  	[ ] complex-structure
+2	SIM115	[ ] open-file-with-context-handler
+1	SIM108	[ ] if-else-block-instead-of-if-exp
+1	N802  	[ ] invalid-function-name
+1	N816  	[ ] mixed-case-variable-in-global-scope
+1	SIM103	[ ] needless-bool
+1	UP015 	[*] redundant-open-modes
+1	I001  	[*] unsorted-imports
+Found 13 errors.
+[*] 2 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).

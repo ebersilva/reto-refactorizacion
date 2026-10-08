@@ -1,0 +1,548 @@
+$ pytest
+...............FFFFFFFFFF.FFFFFF..........FF..FFFFFFF.................   [100%]
+=================================== FAILURES ===================================
+___________ test_registrar_venta_mensajes_de_error[-1-codigo vacio] ____________
+
+codigo = '', cantidad = 1, mensaje = 'codigo vacio'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'codigo vacio'
+E         
+E         - codigo vacio
+
+tests/test_casos_borde.py:86: AssertionError
+_________ test_registrar_venta_mensajes_de_error[None-1-codigo vacio] __________
+
+codigo = None, cantidad = 1, mensaje = 'codigo vacio'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'codigo vacio'
+E         
+E         - codigo vacio
+
+tests/test_casos_borde.py:86: AssertionError
+_______ test_registrar_venta_mensajes_de_error[ZZZ-1-producto no existe] _______
+
+codigo = 'ZZZ', cantidad = 1, mensaje = 'producto no existe'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'producto no existe'
+E         
+E         - producto no existe
+
+tests/test_casos_borde.py:86: AssertionError
+________ test_registrar_venta_mensajes_de_error[A1-0-cantidad invalida] ________
+
+codigo = 'A1', cantidad = 0, mensaje = 'cantidad invalida'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'cantidad invalida'
+E         
+E         - cantidad invalida
+
+tests/test_casos_borde.py:86: AssertionError
+______ test_registrar_venta_mensajes_de_error[A1-None-cantidad invalida] _______
+
+codigo = 'A1', cantidad = None, mensaje = 'cantidad invalida'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'cantidad invalida'
+E         
+E         - cantidad invalida
+
+tests/test_casos_borde.py:86: AssertionError
+_______ test_registrar_venta_mensajes_de_error[A1-51-stock insuficiente] _______
+
+codigo = 'A1', cantidad = 51, mensaje = 'stock insuficiente'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "codigo vacio"),
+            (None, 1, "codigo vacio"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+            ("A1", 51, "stock insuficiente"),
+        ],
+    )
+    def test_registrar_venta_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.registrar_venta(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'stock insuficiente'
+E         
+E         - stock insuficiente
+
+tests/test_casos_borde.py:86: AssertionError
+____________ test_cotizar_mensajes_de_error[-1-producto no existe] _____________
+
+codigo = '', cantidad = 1, mensaje = 'producto no existe'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "producto no existe"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+        ],
+    )
+    def test_cotizar_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.cotizar(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'producto no existe'
+E         
+E         - producto no existe
+
+tests/test_casos_borde.py:102: AssertionError
+___________ test_cotizar_mensajes_de_error[ZZZ-1-producto no existe] ___________
+
+codigo = 'ZZZ', cantidad = 1, mensaje = 'producto no existe'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "producto no existe"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+        ],
+    )
+    def test_cotizar_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.cotizar(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'producto no existe'
+E         
+E         - producto no existe
+
+tests/test_casos_borde.py:102: AssertionError
+____________ test_cotizar_mensajes_de_error[A1-0-cantidad invalida] ____________
+
+codigo = 'A1', cantidad = 0, mensaje = 'cantidad invalida'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "producto no existe"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+        ],
+    )
+    def test_cotizar_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.cotizar(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'cantidad invalida'
+E         
+E         - cantidad invalida
+
+tests/test_casos_borde.py:102: AssertionError
+__________ test_cotizar_mensajes_de_error[A1-None-cantidad invalida] ___________
+
+codigo = 'A1', cantidad = None, mensaje = 'cantidad invalida'
+
+    @pytest.mark.parametrize(
+        ("codigo", "cantidad", "mensaje"),
+        [
+            ("", 1, "producto no existe"),
+            ("ZZZ", 1, "producto no existe"),
+            ("A1", 0, "cantidad invalida"),
+            ("A1", None, "cantidad invalida"),
+        ],
+    )
+    def test_cotizar_mensajes_de_error(codigo, cantidad, mensaje):
+        _alta()
+        assert gestor.cotizar(codigo, cantidad) is None
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'cantidad invalida'
+E         
+E         - cantidad invalida
+
+tests/test_casos_borde.py:102: AssertionError
+________ test_agregar_producto_mensajes_de_error[-10.0-1-codigo vacio] _________
+
+codigo = '', precio = 10.0, stock = 1, mensaje = 'codigo vacio'
+
+    @pytest.mark.parametrize(
+        ("codigo", "precio", "stock", "mensaje"),
+        [
+            ("", 10.0, 1, "codigo vacio"),
+            (None, 10.0, 1, "codigo vacio"),
+            ("A1", 10.0, 1, "el producto ya existe"),
+            ("B1", 0, 1, "precio invalido"),
+            ("B1", 10.0, -1, "stock invalido"),
+        ],
+    )
+    def test_agregar_producto_mensajes_de_error(codigo, precio, stock, mensaje):
+        _alta()
+        assert gestor.agregarProducto(codigo, "X", precio, stock) is False
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'codigo vacio'
+E         
+E         - codigo vacio
+
+tests/test_casos_borde.py:124: AssertionError
+______ test_agregar_producto_mensajes_de_error[None-10.0-1-codigo vacio] _______
+
+codigo = None, precio = 10.0, stock = 1, mensaje = 'codigo vacio'
+
+    @pytest.mark.parametrize(
+        ("codigo", "precio", "stock", "mensaje"),
+        [
+            ("", 10.0, 1, "codigo vacio"),
+            (None, 10.0, 1, "codigo vacio"),
+            ("A1", 10.0, 1, "el producto ya existe"),
+            ("B1", 0, 1, "precio invalido"),
+            ("B1", 10.0, -1, "stock invalido"),
+        ],
+    )
+    def test_agregar_producto_mensajes_de_error(codigo, precio, stock, mensaje):
+        _alta()
+        assert gestor.agregarProducto(codigo, "X", precio, stock) is False
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'codigo vacio'
+E         
+E         - codigo vacio
+
+tests/test_casos_borde.py:124: AssertionError
+___ test_agregar_producto_mensajes_de_error[A1-10.0-1-el producto ya existe] ___
+
+codigo = 'A1', precio = 10.0, stock = 1, mensaje = 'el producto ya existe'
+
+    @pytest.mark.parametrize(
+        ("codigo", "precio", "stock", "mensaje"),
+        [
+            ("", 10.0, 1, "codigo vacio"),
+            (None, 10.0, 1, "codigo vacio"),
+            ("A1", 10.0, 1, "el producto ya existe"),
+            ("B1", 0, 1, "precio invalido"),
+            ("B1", 10.0, -1, "stock invalido"),
+        ],
+    )
+    def test_agregar_producto_mensajes_de_error(codigo, precio, stock, mensaje):
+        _alta()
+        assert gestor.agregarProducto(codigo, "X", precio, stock) is False
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'el producto ya existe'
+E         
+E         - el producto ya existe
+
+tests/test_casos_borde.py:124: AssertionError
+_______ test_agregar_producto_mensajes_de_error[B1-0-1-precio invalido] ________
+
+codigo = 'B1', precio = 0, stock = 1, mensaje = 'precio invalido'
+
+    @pytest.mark.parametrize(
+        ("codigo", "precio", "stock", "mensaje"),
+        [
+            ("", 10.0, 1, "codigo vacio"),
+            (None, 10.0, 1, "codigo vacio"),
+            ("A1", 10.0, 1, "el producto ya existe"),
+            ("B1", 0, 1, "precio invalido"),
+            ("B1", 10.0, -1, "stock invalido"),
+        ],
+    )
+    def test_agregar_producto_mensajes_de_error(codigo, precio, stock, mensaje):
+        _alta()
+        assert gestor.agregarProducto(codigo, "X", precio, stock) is False
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'precio invalido'
+E         
+E         - precio invalido
+
+tests/test_casos_borde.py:124: AssertionError
+______ test_agregar_producto_mensajes_de_error[B1-10.0--1-stock invalido] ______
+
+codigo = 'B1', precio = 10.0, stock = -1, mensaje = 'stock invalido'
+
+    @pytest.mark.parametrize(
+        ("codigo", "precio", "stock", "mensaje"),
+        [
+            ("", 10.0, 1, "codigo vacio"),
+            (None, 10.0, 1, "codigo vacio"),
+            ("A1", 10.0, 1, "el producto ya existe"),
+            ("B1", 0, 1, "precio invalido"),
+            ("B1", 10.0, -1, "stock invalido"),
+        ],
+    )
+    def test_agregar_producto_mensajes_de_error(codigo, precio, stock, mensaje):
+        _alta()
+        assert gestor.agregarProducto(codigo, "X", precio, stock) is False
+>       assert gestor.ultimo_error == mensaje
+E       AssertionError: assert '' == 'stock invalido'
+E         
+E         - stock invalido
+
+tests/test_casos_borde.py:124: AssertionError
+____________________ test_eliminar_y_actualizar_inexistente ____________________
+
+    def test_eliminar_y_actualizar_inexistente():
+        assert gestor.eliminar_producto("ZZZ") is False
+>       assert gestor.ultimo_error == "producto no existe"
+E       AssertionError: assert '' == 'producto no existe'
+E         
+E         - producto no existe
+
+tests/test_casos_borde.py:129: AssertionError
+_________________________ test_cargar_archivo_corrupto _________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_archivo_corrupto0')
+
+    def test_cargar_archivo_corrupto(tmp_path):
+        ruta = tmp_path / "datos.json"
+        ruta.write_text("{esto no es json", encoding="utf-8")
+        _alta()
+        assert almacen.cargar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error == "archivo corrupto"
+E       AssertionError: assert '' == 'archivo corrupto'
+E         
+E         - archivo corrupto
+
+tests/test_casos_borde.py:259: AssertionError
+_________________ test_cargar_archivo_inexistente_deja_mensaje _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_archivo_inexistent1')
+
+    def test_cargar_archivo_inexistente_deja_mensaje(tmp_path):
+        assert almacen.cargar_datos(str(tmp_path / "nada.json")) is False
+>       assert gestor.ultimo_error == "el archivo no existe"
+E       AssertionError: assert '' == 'el archivo no existe'
+E         
+E         - el archivo no existe
+
+tests/test_casos_borde.py:265: AssertionError
+_______________ test_codigo_numerico_cero_no_se_trata_como_vacio _______________
+
+    def test_codigo_numerico_cero_no_se_trata_como_vacio():
+        # Agregado tras detectar en revisión que `if not codigo` cambiaba esto.
+        assert gestor.agregarProducto(0, "Cero", 10.0, 5) is True
+        assert gestor.registrar_venta(0, 1)["folio"] == 1
+        assert gestor.registrar_venta(1, 1) is None
+>       assert gestor.ultimo_error == "producto no existe"
+E       AssertionError: assert '' == 'producto no existe'
+E         
+E         - producto no existe
+
+tests/test_casos_borde.py:291: AssertionError
+____ test_cargar_estructura_invalida_no_toca_el_estado[{"inventario": {}}] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_estructura_invalid0')
+contenido = '{"inventario": {}}'
+
+    @pytest.mark.parametrize(
+        "contenido",
+        ['{"inventario": {}}', '{"ventas": []}', "[]", '{"inventario": [], "ventas": []}'],
+    )
+    def test_cargar_estructura_invalida_no_toca_el_estado(tmp_path, contenido):
+        ruta = tmp_path / "datos.json"
+        ruta.write_text(contenido, encoding="utf-8")
+        _alta()
+        gestor.registrar_venta("A1", 1)
+        assert almacen.cargar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error == "archivo corrupto"
+E       AssertionError: assert '' == 'archivo corrupto'
+E         
+E         - archivo corrupto
+
+tests/test_casos_borde.py:309: AssertionError
+______ test_cargar_estructura_invalida_no_toca_el_estado[{"ventas": []}] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_estructura_invalid1')
+contenido = '{"ventas": []}'
+
+    @pytest.mark.parametrize(
+        "contenido",
+        ['{"inventario": {}}', '{"ventas": []}', "[]", '{"inventario": [], "ventas": []}'],
+    )
+    def test_cargar_estructura_invalida_no_toca_el_estado(tmp_path, contenido):
+        ruta = tmp_path / "datos.json"
+        ruta.write_text(contenido, encoding="utf-8")
+        _alta()
+        gestor.registrar_venta("A1", 1)
+        assert almacen.cargar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error == "archivo corrupto"
+E       AssertionError: assert '' == 'archivo corrupto'
+E         
+E         - archivo corrupto
+
+tests/test_casos_borde.py:309: AssertionError
+____________ test_cargar_estructura_invalida_no_toca_el_estado[[]] _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_estructura_invalid2')
+contenido = '[]'
+
+    @pytest.mark.parametrize(
+        "contenido",
+        ['{"inventario": {}}', '{"ventas": []}', "[]", '{"inventario": [], "ventas": []}'],
+    )
+    def test_cargar_estructura_invalida_no_toca_el_estado(tmp_path, contenido):
+        ruta = tmp_path / "datos.json"
+        ruta.write_text(contenido, encoding="utf-8")
+        _alta()
+        gestor.registrar_venta("A1", 1)
+        assert almacen.cargar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error == "archivo corrupto"
+E       AssertionError: assert '' == 'archivo corrupto'
+E         
+E         - archivo corrupto
+
+tests/test_casos_borde.py:309: AssertionError
+_ test_cargar_estructura_invalida_no_toca_el_estado[{"inventario": [], "ventas": []}] _
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_estructura_invalid3')
+contenido = '{"inventario": [], "ventas": []}'
+
+    @pytest.mark.parametrize(
+        "contenido",
+        ['{"inventario": {}}', '{"ventas": []}', "[]", '{"inventario": [], "ventas": []}'],
+    )
+    def test_cargar_estructura_invalida_no_toca_el_estado(tmp_path, contenido):
+        ruta = tmp_path / "datos.json"
+        ruta.write_text(contenido, encoding="utf-8")
+        _alta()
+        gestor.registrar_venta("A1", 1)
+        assert almacen.cargar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error == "archivo corrupto"
+E       AssertionError: assert '' == 'archivo corrupto'
+E         
+E         - archivo corrupto
+
+tests/test_casos_borde.py:309: AssertionError
+__________________________ test_cargar_ruta_ilegible ___________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_cargar_ruta_ilegible0')
+
+    def test_cargar_ruta_ilegible(tmp_path):
+        # un directorio "existe" pero no se puede leer como archivo
+        assert almacen.cargar_datos(str(tmp_path)) is False
+>       assert gestor.ultimo_error.startswith("no se pudo leer el archivo")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x7f0029df5ea8>('no se pudo leer el archivo')
+E        +    where <built-in method startswith of str object at 0x7f0029df5ea8> = ''.startswith
+E        +      where '' = gestor.ultimo_error
+
+tests/test_casos_borde.py:317: AssertionError
+_________________ test_guardar_en_ruta_invalida_regresa_false __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-ev/pytest-21/test_guardar_en_ruta_invalida_0')
+
+    def test_guardar_en_ruta_invalida_regresa_false(tmp_path):
+        ruta = tmp_path / "no_existe" / "datos.json"
+        assert almacen.guardar_datos(str(ruta)) is False
+>       assert gestor.ultimo_error.startswith("no se pudo guardar el archivo")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x7f0029df5ea8>('no se pudo guardar el archivo')
+E        +    where <built-in method startswith of str object at 0x7f0029df5ea8> = ''.startswith
+E        +      where '' = gestor.ultimo_error
+
+tests/test_casos_borde.py:323: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[-1-codigo vacio]
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[None-1-codigo vacio]
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[ZZZ-1-producto no existe]
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-0-cantidad invalida]
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-None-cantidad invalida]
+FAILED tests/test_casos_borde.py::test_registrar_venta_mensajes_de_error[A1-51-stock insuficiente]
+FAILED tests/test_casos_borde.py::test_cotizar_mensajes_de_error[-1-producto no existe]
+FAILED tests/test_casos_borde.py::test_cotizar_mensajes_de_error[ZZZ-1-producto no existe]
+FAILED tests/test_casos_borde.py::test_cotizar_mensajes_de_error[A1-0-cantidad invalida]
+FAILED tests/test_casos_borde.py::test_cotizar_mensajes_de_error[A1-None-cantidad invalida]
+FAILED tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[-10.0-1-codigo vacio]
+FAILED tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[None-10.0-1-codigo vacio]
+FAILED tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[A1-10.0-1-el producto ya existe]
+FAILED tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[B1-0-1-precio invalido]
+FAILED tests/test_casos_borde.py::test_agregar_producto_mensajes_de_error[B1-10.0--1-stock invalido]
+FAILED tests/test_casos_borde.py::test_eliminar_y_actualizar_inexistente - As...
+FAILED tests/test_casos_borde.py::test_cargar_archivo_corrupto - AssertionErr...
+FAILED tests/test_casos_borde.py::test_cargar_archivo_inexistente_deja_mensaje
+FAILED tests/test_casos_borde.py::test_codigo_numerico_cero_no_se_trata_como_vacio
+FAILED tests/test_casos_borde.py::test_cargar_estructura_invalida_no_toca_el_estado[{"inventario": {}}]
+FAILED tests/test_casos_borde.py::test_cargar_estructura_invalida_no_toca_el_estado[{"ventas": []}]
+FAILED tests/test_casos_borde.py::test_cargar_estructura_invalida_no_toca_el_estado[[]]
+FAILED tests/test_casos_borde.py::test_cargar_estructura_invalida_no_toca_el_estado[{"inventario": [], "ventas": []}]
+FAILED tests/test_casos_borde.py::test_cargar_ruta_ilegible - AssertionError:...
+FAILED tests/test_casos_borde.py::test_guardar_en_ruta_invalida_regresa_false
+25 failed, 45 passed in 0.13s
+
+$ ruff check src --statistics
+1	F841	unused-variable
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+$ pytest (solo suite original del reto)
+20 passed in 0.01s

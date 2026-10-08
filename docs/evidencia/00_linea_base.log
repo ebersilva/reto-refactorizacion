@@ -1,0 +1,289 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- /home/ev/git/reto-refactorizacion/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/ev/git/reto-refactorizacion
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 20 items
+
+tests/test_almacen.py::test_guardar_y_cargar_conserva_los_datos PASSED   [  5%]
+tests/test_almacen.py::test_el_folio_continua_despues_de_recargar PASSED [ 10%]
+tests/test_almacen.py::test_cargar_archivo_inexistente_regresa_false PASSED [ 15%]
+tests/test_gestor.py::test_agregar_producto_queda_en_inventario PASSED   [ 20%]
+tests/test_gestor.py::test_rechaza_altas_invalidas PASSED                [ 25%]
+tests/test_gestor.py::test_actualizar_stock_suma_y_resta PASSED          [ 30%]
+tests/test_gestor.py::test_eliminar_producto PASSED                      [ 35%]
+tests/test_gestor.py::test_buscar_producto_por_nombre PASSED             [ 40%]
+tests/test_gestor.py::test_venta_descuenta_stock_y_asigna_folio PASSED   [ 45%]
+tests/test_gestor.py::test_venta_sin_descuento_aplica_iva PASSED         [ 50%]
+tests/test_gestor.py::test_venta_con_descuento_por_volumen_medio PASSED  [ 55%]
+tests/test_gestor.py::test_venta_con_descuento_por_volumen_alto PASSED   [ 60%]
+tests/test_gestor.py::test_venta_cliente_vip_recibe_descuento_extra PASSED [ 65%]
+tests/test_gestor.py::test_venta_rechaza_stock_insuficiente PASSED       [ 70%]
+tests/test_gestor.py::test_venta_rechaza_producto_inexistente_y_cantidad_invalida PASSED [ 75%]
+tests/test_gestor.py::test_cotizar_coincide_con_el_total_de_la_venta PASSED [ 80%]
+tests/test_reportes.py::test_stock_bajo_detecta_los_correctos PASSED     [ 85%]
+tests/test_reportes.py::test_total_vendido_suma_las_ventas PASSED        [ 90%]
+tests/test_reportes.py::test_mas_vendidos_ordena_por_unidades PASSED     [ 95%]
+tests/test_reportes.py::test_reporte_inventario_marca_stock_bajo PASSED  [100%]
+
+============================== 20 passed in 0.02s ==============================
+
+UP009 [*] UTF-8 encoding declaration is unnecessary
+ --> src/almacen.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+2 | """Persistencia del gestor: carga y guardado de datos en JSON."""
+  |
+help: Remove unnecessary coding comment
+  |
+  - # -*- coding: utf-8 -*-
+1 | """Persistencia del gestor: carga y guardado de datos en JSON."""
+  |
+
+SIM115 Use a context manager for opening files
+  --> src/almacen.py:16:9
+   |
+14 |     d["ventas"] = gestor.VENTAS
+15 |     d["contador"] = gestor.contadorVentas
+16 |     f = open(ruta, "w", encoding="utf-8")
+   |         ^^^^
+17 |     json.dump(d, f, indent=2, ensure_ascii=False)
+18 |     f.close()
+   |
+
+SIM115 Use a context manager for opening files
+  --> src/almacen.py:30:9
+   |
+28 |         gestor.ultimo_error = "el archivo no existe"
+29 |         return False
+30 |     f = open(ruta, "r", encoding="utf-8")
+   |         ^^^^
+31 |     try:
+32 |         d = json.load(f)
+   |
+
+UP015 [*] Unnecessary mode argument
+  --> src/almacen.py:30:20
+   |
+28 |         gestor.ultimo_error = "el archivo no existe"
+29 |         return False
+30 |     f = open(ruta, "r", encoding="utf-8")
+   |                    ^^^
+31 |     try:
+32 |         d = json.load(f)
+   |
+help: Remove mode argument
+   |
+29 |         return False
+   -     f = open(ruta, "r", encoding="utf-8")
+30 +     f = open(ruta, encoding="utf-8")
+31 |     try:
+   |
+
+N802 Function name `hayArchivo` should be lowercase
+  --> src/almacen.py:48:5
+   |
+48 | def hayArchivo(ruta):
+   |     ^^^^^^^^^^
+49 |     # checa si ya existe el archivo de datos
+50 |     if os.path.exists(ruta):
+   |
+
+SIM103 Return the condition `bool(os.path.exists(ruta))` directly
+  --> src/almacen.py:50:5
+   |
+48 |   def hayArchivo(ruta):
+49 |       # checa si ya existe el archivo de datos
+50 | /     if os.path.exists(ruta):
+51 | |         return True
+52 | |     else:
+53 | |         return False
+   | |____________________^
+help: Replace with `return bool(os.path.exists(ruta))`
+
+UP009 [*] UTF-8 encoding declaration is unnecessary
+ --> src/gestor.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+2 | """Modulo principal del gestor de inventario y ventas de "La Esquina".
+  |
+help: Remove unnecessary coding comment
+  |
+  - # -*- coding: utf-8 -*-
+1 | """Modulo principal del gestor de inventario y ventas de "La Esquina".
+  |
+
+N816 Variable `contadorVentas` in global scope should not be mixedCase
+  --> src/gestor.py:15:1
+   |
+13 | INVENTARIO = {}
+14 | VENTAS = []
+15 | contadorVentas = 0
+   | ^^^^^^^^^^^^^^
+16 | ultimo_error = ""
+17 | MODO_DEBUG = False
+   |
+
+C901 `registrar_venta` is too complex (12 > 10)
+  --> src/gestor.py:86:5
+   |
+86 | def registrar_venta(codigo, cantidad, cliente=""):
+   |     ^^^^^^^^^^^^^^^
+87 |     """Registra una venta completa.
+   |
+
+SIM108 Use ternary operator `desc = aux * 0.05 if aux >= 500 else 0` instead of `if`-`else`-block
+   --> src/gestor.py:120:9
+    |
+118 |           desc = aux * 0.10
+119 |       else:
+120 | /         if aux >= 500:
+121 | |             desc = aux * 0.05
+122 | |         else:
+123 | |             desc = 0
+    | |____________________^
+124 |       # los clientes cuyo codigo empieza con VIP tienen un extra,
+125 |       # pero solo si su compra (ya con descuento) pasa de cierto monto
+    |
+help: Replace `if`-`else`-block with `desc = aux * 0.05 if aux >= 500 else 0`
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+   --> src/gestor.py:126:5
+    |
+124 |       # los clientes cuyo codigo empieza con VIP tienen un extra,
+125 |       # pero solo si su compra (ya con descuento) pasa de cierto monto
+126 | /     if cliente != "" and cliente is not None:
+127 | |         if len(cliente) >= 3:
+128 | |             if cliente[0:3] == "VIP":
+129 | |                 if aux - desc > 200:
+    | |____________________________________^
+130 |                       desc = desc + aux * 0.02
+131 |       base = aux - desc
+    |
+help: Combine `if` statements using `and`
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+   --> src/gestor.py:127:9
+    |
+125 |       # pero solo si su compra (ya con descuento) pasa de cierto monto
+126 |       if cliente != "" and cliente is not None:
+127 | /         if len(cliente) >= 3:
+128 | |             if cliente[0:3] == "VIP":
+129 | |                 if aux - desc > 200:
+    | |____________________________________^
+130 |                       desc = desc + aux * 0.02
+131 |       base = aux - desc
+    |
+help: Combine `if` statements using `and`
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+   --> src/gestor.py:128:13
+    |
+126 |       if cliente != "" and cliente is not None:
+127 |           if len(cliente) >= 3:
+128 | /             if cliente[0:3] == "VIP":
+129 | |                 if aux - desc > 200:
+    | |____________________________________^
+130 |                       desc = desc + aux * 0.02
+131 |       base = aux - desc
+    |
+help: Combine `if` statements using `and`
+
+UP009 [*] UTF-8 encoding declaration is unnecessary
+ --> src/main.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+2 | """Punto de entrada del gestor de tienda (menu interactivo en consola)."""
+  |
+help: Remove unnecessary coding comment
+  |
+  - # -*- coding: utf-8 -*-
+1 | """Punto de entrada del gestor de tienda (menu interactivo en consola)."""
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> src/main.py:4:1
+  |
+2 |   """Punto de entrada del gestor de tienda (menu interactivo en consola)."""
+3 |
+4 | / import gestor
+5 | | import almacen
+6 | | import reportes
+  | |_______________^
+7 |
+8 |   ARCHIVO = "datos_ejemplo.json"
+  |
+help: Organize imports
+  |
+3 |
+4 + import almacen
+5 | import gestor
+  - import almacen
+6 | import reportes
+  |
+
+C901 `menu` is too complex (17 > 10)
+  --> src/main.py:21:5
+   |
+21 | def menu():
+   |     ^^^^
+22 |     print("Bienvenido al gestor de la tienda La Esquina")
+23 |     if almacen.hayArchivo(ARCHIVO):
+   |
+
+UP009 [*] UTF-8 encoding declaration is unnecessary
+ --> src/reportes.py:1:1
+  |
+1 | # -*- coding: utf-8 -*-
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+2 | """Reportes de la tienda: inventario, ventas y mas vendidos."""
+  |
+help: Remove unnecessary coding comment
+  |
+  - # -*- coding: utf-8 -*-
+1 | """Reportes de la tienda: inventario, ventas y mas vendidos."""
+  |
+
+F401 [*] `os` imported but unused
+ --> src/reportes.py:4:8
+  |
+2 | """Reportes de la tienda: inventario, ventas y mas vendidos."""
+3 |
+4 | import os
+  |        ^^
+5 |
+6 | import gestor
+  |
+help: Remove unused import: `os`
+  |
+3 |
+  - import os
+4 |
+  |
+
+N802 Function name `reporteViejoCSV` should be lowercase
+  --> src/reportes.py:83:5
+   |
+83 | def reporteViejoCSV(ruta):
+   |     ^^^^^^^^^^^^^^^
+84 |     # version vieja del reporte que pedia contabilidad, ya no se usa
+85 |     # desde que cambiaron de sistema, pero por si las dudas aqui sigue
+   |
+
+SIM115 Use a context manager for opening files
+  --> src/reportes.py:86:9
+   |
+84 |     # version vieja del reporte que pedia contabilidad, ya no se usa
+85 |     # desde que cambiaron de sistema, pero por si las dudas aqui sigue
+86 |     f = open(ruta, "w", encoding="utf-8")
+   |         ^^^^
+87 |     f.write("codigo,nombre,stock\n")
+88 |     for k in gestor.INVENTARIO:
+   |
+
+Found 20 errors.
+[*] 7 fixable with the `--fix` option (5 hidden fixes can be enabled with the `--unsafe-fixes` option).

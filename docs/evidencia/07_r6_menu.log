@@ -1,0 +1,14 @@
+$ pytest
+................................................................         [100%]
+64 passed in 0.04s
+
+$ ruff check src --statistics
+2	SIM115	[ ] open-file-with-context-handler
+1	N802  	[ ] invalid-function-name
+1	N816  	[ ] mixed-case-variable-in-global-scope
+1	UP015 	[*] redundant-open-modes
+Found 5 errors.
+[*] 1 fixable with the `--fix` option.
+
+$ comparar menú original vs refactorizado (misma entrada scriptada)
+MENU IDENTICO (155 lineas de salida, JSON guardado igual)

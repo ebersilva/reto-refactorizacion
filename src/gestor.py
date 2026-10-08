@@ -5,7 +5,7 @@ lo fueron parchando varias personas, asi que hay de todo un poco.
 """
 
 from datetime import datetime
-from typing import NamedTuple
+from typing import NamedTuple, TypedDict
 
 # ---------------------------------------------------------------
 # Reglas de negocio
@@ -22,16 +22,43 @@ NOMBRE_TIENDA = "TIENDA LA ESQUINA"
 SEPARADOR_TICKET = "-" * 28
 FORMATO_FECHA = "%Y-%m-%d %H:%M:%S"
 
+
+class Producto(TypedDict):
+    codigo: str
+    nombre: str
+    precio: float
+    stock: int
+
+
+class DatosVenta(TypedDict):
+    """Registro de una venta sin el ticket (lo que se necesita para armarlo)."""
+
+    folio: int
+    codigo: str
+    nombre: str
+    cantidad: int
+    subtotal: float
+    descuento: float
+    impuesto: float
+    total: float
+    cliente: str | None
+    fecha: str
+
+
+class Venta(DatosVenta):
+    ticket: str
+
+
 # ---------------------------------------------------------------
 # Estado global de la aplicacion (inventario, ventas y contadores)
 # ---------------------------------------------------------------
-INVENTARIO = {}
-VENTAS = []
-contador_ventas = 0
-ultimo_error = ""
+INVENTARIO: dict[str, Producto] = {}
+VENTAS: list[Venta] = []
+contador_ventas: int = 0
+ultimo_error: str = ""
 
 
-def reiniciar_sistema():
+def reiniciar_sistema() -> None:
     """Borra todo el estado del sistema (inventario, ventas y folios)."""
     global contador_ventas, ultimo_error
     INVENTARIO.clear()
@@ -40,7 +67,7 @@ def reiniciar_sistema():
     ultimo_error = ""
 
 
-def agregarProducto(codigo, nombre, precio, stock):
+def agregarProducto(codigo: str, nombre: str, precio: float, stock: int) -> bool:
     """Valida los datos y da de alta un producto en el inventario.
 
     Conserva el nombre camelCase porque es API publica usada por los tests.
@@ -67,7 +94,7 @@ def agregarProducto(codigo, nombre, precio, stock):
     return True
 
 
-def eliminar_producto(codigo):
+def eliminar_producto(codigo: str) -> bool:
     """Quita un producto del inventario. Regresa False si no existe."""
     global ultimo_error
     if codigo in INVENTARIO:
@@ -77,7 +104,7 @@ def eliminar_producto(codigo):
     return False
 
 
-def actualizar_stock(codigo, cantidad):
+def actualizar_stock(codigo: str, cantidad: int) -> bool:
     """Suma unidades al stock (o resta si la cantidad es negativa)."""
     global ultimo_error
     if codigo not in INVENTARIO:
@@ -91,7 +118,7 @@ def actualizar_stock(codigo, cantidad):
     return True
 
 
-def buscarProducto(texto):
+def buscarProducto(texto: str) -> list[Producto]:
     """Productos cuyo nombre contiene el texto, sin distinguir mayusculas.
 
     Conserva el nombre camelCase porque es API publica usada por los tests.
@@ -113,7 +140,7 @@ class Importes(NamedTuple):
     total: float
 
 
-def calcular_descuento_por_volumen(subtotal):
+def calcular_descuento_por_volumen(subtotal: float) -> float:
     """Descuento según el monto de la compra (antes de IVA)."""
     if subtotal >= UMBRAL_DESCUENTO_ALTO:
         return subtotal * TASA_DESCUENTO_ALTO
@@ -122,15 +149,17 @@ def calcular_descuento_por_volumen(subtotal):
     return 0
 
 
-def calcular_descuento_vip(subtotal, descuento_volumen, cliente):
+def calcular_descuento_vip(
+    subtotal: float, descuento_volumen: float, cliente: str | None
+) -> float:
     """Descuento extra para clientes VIP con compras arriba del monto minimo."""
-    es_vip = bool(cliente) and cliente.startswith(PREFIJO_CLIENTE_VIP)
+    es_vip = cliente is not None and cliente.startswith(PREFIJO_CLIENTE_VIP)
     if es_vip and subtotal - descuento_volumen > MONTO_MINIMO_VIP:
         return subtotal * TASA_DESCUENTO_VIP
     return 0
 
 
-def calcular_importes(subtotal, cliente=""):
+def calcular_importes(subtotal: float, cliente: str | None = "") -> Importes:
     """Aplica descuentos e IVA a un subtotal. Fuente unica de las reglas de precio.
 
     Lo usan tanto registrar_venta como cotizar, asi que la cotizacion siempre
@@ -143,7 +172,7 @@ def calcular_importes(subtotal, cliente=""):
     return Importes(subtotal, descuento, impuesto, round(base + impuesto, 2))
 
 
-def formatear_ticket(venta):
+def formatear_ticket(venta: DatosVenta) -> str:
     """Arma el ticket de texto plano de una venta ya registrada."""
     lineas = [
         NOMBRE_TIENDA,
@@ -159,7 +188,9 @@ def formatear_ticket(venta):
     return "\n".join(lineas) + "\n"
 
 
-def registrar_venta(codigo, cantidad, cliente=""):
+def registrar_venta(
+    codigo: str, cantidad: int | None, cliente: str | None = ""
+) -> Venta | None:
     """Valida y registra una venta: descuenta stock, asigna folio y arma el ticket.
 
     Regresa el registro de la venta, o None si los datos no son validos
@@ -182,7 +213,7 @@ def registrar_venta(codigo, cantidad, cliente=""):
     importes = calcular_importes(producto["precio"] * cantidad, cliente)
     producto["stock"] -= cantidad
     contador_ventas += 1
-    venta = {
+    datos: DatosVenta = {
         "folio": contador_ventas,
         "codigo": codigo,
         "nombre": producto["nombre"],
@@ -194,12 +225,12 @@ def registrar_venta(codigo, cantidad, cliente=""):
         "cliente": cliente,
         "fecha": datetime.now().strftime(FORMATO_FECHA),
     }
-    venta["ticket"] = formatear_ticket(venta)
+    venta: Venta = {**datos, "ticket": formatear_ticket(datos)}
     VENTAS.append(venta)
     return venta
 
 
-def cotizar(codigo, cantidad):
+def cotizar(codigo: str, cantidad: int | None) -> float | None:
     """Calcula cuanto costaria una compra sin registrar la venta."""
     global ultimo_error
     if codigo not in INVENTARIO:

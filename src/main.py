@@ -1,5 +1,7 @@
 """Punto de entrada del gestor de tienda (menu interactivo en consola)."""
 
+from collections.abc import Callable
+
 import almacen
 import gestor
 import reportes
@@ -18,7 +20,7 @@ OPCIONES_MENU = [
 ]
 
 
-def pedir_numero(mensaje):
+def pedir_numero(mensaje: str) -> float:
     """Pide un numero al usuario hasta que escriba algo valido."""
     while True:
         respuesta = input(mensaje)
@@ -28,11 +30,11 @@ def pedir_numero(mensaje):
             print("Eso no es un numero, intenta de nuevo.")
 
 
-def mostrar_error():
+def mostrar_error() -> None:
     print("Error:", gestor.ultimo_error)
 
 
-def opcion_agregar_producto():
+def opcion_agregar_producto() -> None:
     codigo = input("Codigo: ")
     nombre = input("Nombre: ")
     precio = pedir_numero("Precio: ")
@@ -43,7 +45,7 @@ def opcion_agregar_producto():
         mostrar_error()
 
 
-def opcion_registrar_venta():
+def opcion_registrar_venta() -> None:
     codigo = input("Codigo del producto: ")
     cantidad = int(pedir_numero("Cantidad: "))
     cliente = input("Codigo de cliente (enter si no tiene): ")
@@ -54,7 +56,7 @@ def opcion_registrar_venta():
         mostrar_error()
 
 
-def opcion_cotizar():
+def opcion_cotizar() -> None:
     codigo = input("Codigo del producto: ")
     cantidad = int(pedir_numero("Cantidad: "))
     total = gestor.cotizar(codigo, cantidad)
@@ -64,12 +66,12 @@ def opcion_cotizar():
         mostrar_error()
 
 
-def opcion_mas_vendidos():
+def opcion_mas_vendidos() -> None:
     for codigo, unidades in reportes.mas_vendidos():
         print(codigo, "->", unidades, "unidades")
 
 
-def opcion_stock_bajo():
+def opcion_stock_bajo() -> None:
     bajos = reportes.productos_stock_bajo()
     if not bajos:
         print("No hay productos con stock bajo.")
@@ -78,7 +80,7 @@ def opcion_stock_bajo():
         print("OJO:", producto["nombre"], "solo tiene", producto["stock"], "unidades")
 
 
-ACCIONES = {
+ACCIONES: dict[str, Callable[[], object]] = {
     "1": opcion_agregar_producto,
     "2": opcion_registrar_venta,
     "3": opcion_cotizar,
@@ -90,7 +92,7 @@ ACCIONES = {
 OPCION_SALIR = "8"
 
 
-def menu():
+def menu() -> None:
     print("Bienvenido al gestor de la tienda La Esquina")
     if almacen.existe_archivo(ARCHIVO):
         if almacen.cargar_datos(ARCHIVO):

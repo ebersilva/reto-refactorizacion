@@ -58,13 +58,43 @@ contador_ventas: int = 0
 ultimo_error: str = ""
 
 
+class EstadoGuardado(TypedDict):
+    inventario: dict[str, Producto]
+    ventas: list[Venta]
+    contador: int
+
+
+def registrar_error(mensaje: str) -> None:
+    """Deja el motivo de la ultima operacion fallida en ultimo_error."""
+    global ultimo_error
+    ultimo_error = mensaje
+
+
+def exportar_estado() -> EstadoGuardado:
+    """Estado actual listo para persistir (comparte las colecciones, no las copia)."""
+    return {"inventario": INVENTARIO, "ventas": VENTAS, "contador": contador_ventas}
+
+
+def restaurar_estado(
+    inventario: dict[str, Producto], ventas: list[Venta], contador: int
+) -> None:
+    """Reemplaza el estado completo.
+
+    INVENTARIO y VENTAS se mutan en sitio (nunca se reasignan) porque otros
+    modulos, y los tests, conservan referencias a esos mismos objetos.
+    """
+    global contador_ventas
+    INVENTARIO.clear()
+    INVENTARIO.update(inventario)
+    VENTAS.clear()
+    VENTAS.extend(ventas)
+    contador_ventas = contador
+
+
 def reiniciar_sistema() -> None:
     """Borra todo el estado del sistema (inventario, ventas y folios)."""
-    global contador_ventas, ultimo_error
-    INVENTARIO.clear()
-    VENTAS.clear()
-    contador_ventas = 0
-    ultimo_error = ""
+    restaurar_estado({}, [], 0)
+    registrar_error("")
 
 
 def agregarProducto(codigo: str, nombre: str, precio: float, stock: int) -> bool:
@@ -72,18 +102,17 @@ def agregarProducto(codigo: str, nombre: str, precio: float, stock: int) -> bool
 
     Conserva el nombre camelCase porque es API publica usada por los tests.
     """
-    global ultimo_error
     if codigo in (None, ""):
-        ultimo_error = "codigo vacio"
+        registrar_error("codigo vacio")
         return False
     if codigo in INVENTARIO:
-        ultimo_error = "el producto ya existe"
+        registrar_error("el producto ya existe")
         return False
     if precio <= 0:
-        ultimo_error = "precio invalido"
+        registrar_error("precio invalido")
         return False
     if stock < 0:
-        ultimo_error = "stock invalido"
+        registrar_error("stock invalido")
         return False
     INVENTARIO[codigo] = {
         "codigo": codigo,
@@ -96,23 +125,21 @@ def agregarProducto(codigo: str, nombre: str, precio: float, stock: int) -> bool
 
 def eliminar_producto(codigo: str) -> bool:
     """Quita un producto del inventario. Regresa False si no existe."""
-    global ultimo_error
     if codigo in INVENTARIO:
         del INVENTARIO[codigo]
         return True
-    ultimo_error = "producto no existe"
+    registrar_error("producto no existe")
     return False
 
 
 def actualizar_stock(codigo: str, cantidad: int) -> bool:
     """Suma unidades al stock (o resta si la cantidad es negativa)."""
-    global ultimo_error
     if codigo not in INVENTARIO:
-        ultimo_error = "producto no existe"
+        registrar_error("producto no existe")
         return False
     nuevo_stock = INVENTARIO[codigo]["stock"] + cantidad
     if nuevo_stock < 0:
-        ultimo_error = "el stock no puede quedar negativo"
+        registrar_error("el stock no puede quedar negativo")
         return False
     INVENTARIO[codigo]["stock"] = nuevo_stock
     return True
@@ -196,19 +223,19 @@ def registrar_venta(
     Regresa el registro de la venta, o None si los datos no son validos
     (el motivo queda en ultimo_error).
     """
-    global contador_ventas, ultimo_error
+    global contador_ventas
     if codigo in (None, ""):
-        ultimo_error = "codigo vacio"
+        registrar_error("codigo vacio")
         return None
     if codigo not in INVENTARIO:
-        ultimo_error = "producto no existe"
+        registrar_error("producto no existe")
         return None
     if cantidad is None or cantidad <= 0:
-        ultimo_error = "cantidad invalida"
+        registrar_error("cantidad invalida")
         return None
     producto = INVENTARIO[codigo]
     if producto["stock"] < cantidad:
-        ultimo_error = "stock insuficiente"
+        registrar_error("stock insuficiente")
         return None
     importes = calcular_importes(producto["precio"] * cantidad, cliente)
     producto["stock"] -= cantidad
@@ -232,11 +259,10 @@ def registrar_venta(
 
 def cotizar(codigo: str, cantidad: int | None) -> float | None:
     """Calcula cuanto costaria una compra sin registrar la venta."""
-    global ultimo_error
     if codigo not in INVENTARIO:
-        ultimo_error = "producto no existe"
+        registrar_error("producto no existe")
         return None
     if cantidad is None or cantidad <= 0:
-        ultimo_error = "cantidad invalida"
+        registrar_error("cantidad invalida")
         return None
     return calcular_importes(INVENTARIO[codigo]["precio"] * cantidad).total

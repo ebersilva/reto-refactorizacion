@@ -27,21 +27,24 @@ FORMATO_FECHA = "%Y-%m-%d %H:%M:%S"
 # ---------------------------------------------------------------
 INVENTARIO = {}
 VENTAS = []
-contadorVentas = 0
+contador_ventas = 0
 ultimo_error = ""
 
 
 def reiniciar_sistema():
     """Borra todo el estado del sistema (inventario, ventas y folios)."""
-    global contadorVentas, ultimo_error
+    global contador_ventas, ultimo_error
     INVENTARIO.clear()
     VENTAS.clear()
-    contadorVentas = 0
+    contador_ventas = 0
     ultimo_error = ""
 
 
 def agregarProducto(codigo, nombre, precio, stock):
-    # valida los datos y da de alta un producto en el inventario
+    """Valida los datos y da de alta un producto en el inventario.
+
+    Conserva el nombre camelCase porque es API publica usada por los tests.
+    """
     global ultimo_error
     if codigo in (None, ""):
         ultimo_error = "codigo vacio"
@@ -55,12 +58,12 @@ def agregarProducto(codigo, nombre, precio, stock):
     if stock < 0:
         ultimo_error = "stock invalido"
         return False
-    x = {}
-    x["codigo"] = codigo
-    x["nombre"] = nombre
-    x["precio"] = precio
-    x["stock"] = stock
-    INVENTARIO[codigo] = x
+    INVENTARIO[codigo] = {
+        "codigo": codigo,
+        "nombre": nombre,
+        "precio": precio,
+        "stock": stock,
+    }
     return True
 
 
@@ -80,21 +83,25 @@ def actualizar_stock(codigo, cantidad):
     if codigo not in INVENTARIO:
         ultimo_error = "producto no existe"
         return False
-    aux = INVENTARIO[codigo]["stock"] + cantidad
-    if aux < 0:
+    nuevo_stock = INVENTARIO[codigo]["stock"] + cantidad
+    if nuevo_stock < 0:
         ultimo_error = "el stock no puede quedar negativo"
         return False
-    INVENTARIO[codigo]["stock"] = aux
+    INVENTARIO[codigo]["stock"] = nuevo_stock
     return True
 
 
 def buscarProducto(texto):
-    # busca productos cuyo nombre contenga el texto (sin importar mayusculas)
-    temp2 = []
-    for k in INVENTARIO:
-        if texto.lower() in INVENTARIO[k]["nombre"].lower():
-            temp2.append(INVENTARIO[k])
-    return temp2
+    """Productos cuyo nombre contiene el texto, sin distinguir mayusculas.
+
+    Conserva el nombre camelCase porque es API publica usada por los tests.
+    """
+    texto_buscado = texto.lower()
+    return [
+        producto
+        for producto in INVENTARIO.values()
+        if texto_buscado in producto["nombre"].lower()
+    ]
 
 
 class Importes(NamedTuple):
@@ -158,7 +165,7 @@ def registrar_venta(codigo, cantidad, cliente=""):
     Regresa el registro de la venta, o None si los datos no son validos
     (el motivo queda en ultimo_error).
     """
-    global contadorVentas, ultimo_error
+    global contador_ventas, ultimo_error
     if codigo in (None, ""):
         ultimo_error = "codigo vacio"
         return None
@@ -168,17 +175,17 @@ def registrar_venta(codigo, cantidad, cliente=""):
     if cantidad is None or cantidad <= 0:
         ultimo_error = "cantidad invalida"
         return None
-    temp2 = INVENTARIO[codigo]
-    if temp2["stock"] < cantidad:
+    producto = INVENTARIO[codigo]
+    if producto["stock"] < cantidad:
         ultimo_error = "stock insuficiente"
         return None
-    importes = calcular_importes(temp2["precio"] * cantidad, cliente)
-    temp2["stock"] = temp2["stock"] - cantidad
-    contadorVentas = contadorVentas + 1
+    importes = calcular_importes(producto["precio"] * cantidad, cliente)
+    producto["stock"] -= cantidad
+    contador_ventas += 1
     venta = {
-        "folio": contadorVentas,
+        "folio": contador_ventas,
         "codigo": codigo,
-        "nombre": temp2["nombre"],
+        "nombre": producto["nombre"],
         "cantidad": cantidad,
         "subtotal": round(importes.subtotal, 2),
         "descuento": round(importes.descuento, 2),

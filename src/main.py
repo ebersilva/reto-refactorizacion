@@ -92,7 +92,7 @@ OPCION_SALIR = "8"
 
 def menu():
     print("Bienvenido al gestor de la tienda La Esquina")
-    if almacen.hayArchivo(ARCHIVO):
+    if almacen.existe_archivo(ARCHIVO):
         if almacen.cargar_datos(ARCHIVO):
             print("Datos cargados de", ARCHIVO)
         else:

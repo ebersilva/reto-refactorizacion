@@ -29,6 +29,8 @@ pip install -r requirements.txt
 pytest                             # TODAS las pruebas deben pasar
 ruff check src                     # debe terminar sin errores
 ruff check src --fix               # solo para correcciones triviales (imports, encoding)
+ruff format src                    # formato consistente
+pip install mypy && (cd src && mypy --strict --python-version 3.10 .)  # tipos
 ```
 
 **Después de cada cambio corre `pytest` y `ruff check src`.** No des una tarea
@@ -111,3 +113,26 @@ def calcular_descuento_por_volumen(subtotal: float) -> float:
   código, nunca el test.
 - Al terminar cada refactorización, agrega la fila correspondiente en
   `docs/bitacora.md` y guarda la salida de pytest/ruff en `docs/evidencia/`.
+
+## Lecciones aprendidas durante el reto (sección agregada al final)
+
+Estas reglas se agregaron después de errores reales detectados por las pruebas
+(detalle en `docs/bitacora.md`):
+
+- **No uses truthiness para validar** (`if not codigo`): cambia casos límite
+  como el código `0`. Compara explícitamente: `codigo in (None, "")`. *(R4)*
+- **"Idiomático" no siempre es equivalente.** Antes de cambiar a un helper de
+  la biblioteca estándar, revisa los bordes (`Counter.most_common(-1)` ≠
+  `lista[:-1]`). *(R9)*
+- **Nada de reemplazos masivos con regex sobre `global`, `return` o nombres
+  cortos.** Revisa cada ocurrencia; uno de esos reemplazos quitó un `global`
+  necesario y silenció todos los mensajes de error. *(R11)*
+- **Los type hints se verifican** con `mypy --strict`; no uses
+  `# type: ignore` para callarlo. *(R10)*
+- **Cuidado con el punto flotante:** conserva el orden de las operaciones
+  (`base + base * TASA_IVA`, no `base * 1.16`). *(R3)*
+- `main.py` no tiene tests: cualquier cambio ahí se valida comparando la salida
+  del menú contra la versión anterior con la misma entrada scriptada. *(R6)*
+- La suite original no detecta cambios de texto ni de mensajes. Si una
+  refactorización toca algo sin prueba, **primero agrega la prueba** (que pase
+  con el código actual) y después cambia el código.

@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """Reportes de la tienda: inventario, ventas y mas vendidos."""
-
-import os
 
 import gestor
 
@@ -79,14 +76,3 @@ def resumen_ventas():
     print(s)
     return s
 
-
-def reporteViejoCSV(ruta):
-    # version vieja del reporte que pedia contabilidad, ya no se usa
-    # desde que cambiaron de sistema, pero por si las dudas aqui sigue
-    f = open(ruta, "w", encoding="utf-8")
-    f.write("codigo,nombre,stock\n")
-    for k in gestor.INVENTARIO:
-        p = gestor.INVENTARIO[k]
-        f.write(p["codigo"] + "," + p["nombre"] + "," + str(p["stock"]) + "\n")
-    f.close()
-    return ruta

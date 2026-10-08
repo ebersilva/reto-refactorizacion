@@ -1,7 +1,7 @@
-"""Modulo principal del gestor de inventario y ventas de "La Esquina".
+"""Logica de negocio del gestor de inventario y ventas de "La Esquina".
 
-Aqui vive casi toda la logica del negocio. Historicamente este archivo
-lo fueron parchando varias personas, asi que hay de todo un poco.
+Contiene las reglas de precio (descuentos e IVA), el alta y consulta de
+productos, el registro de ventas y el estado en memoria de la aplicacion.
 """
 
 from datetime import datetime

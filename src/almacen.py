@@ -2,7 +2,7 @@
 
 import json
 import os
-from typing import Any
+from typing import Any, TypeGuard
 
 import gestor
 
@@ -28,7 +28,7 @@ def _leer_json(ruta: str) -> dict[str, Any] | None:
         return None
     try:
         with open(ruta, encoding="utf-8") as archivo:
-            datos: dict[str, Any] = json.load(archivo)
+            datos = json.load(archivo)
     except json.JSONDecodeError:
         gestor.registrar_error("archivo corrupto")
         return None
@@ -41,7 +41,7 @@ def _leer_json(ruta: str) -> dict[str, Any] | None:
     return datos
 
 
-def _tiene_estructura_valida(datos: Any) -> bool:
+def _tiene_estructura_valida(datos: Any) -> TypeGuard[dict[str, Any]]:
     return (
         isinstance(datos, dict)
         and isinstance(datos.get("inventario"), dict)
